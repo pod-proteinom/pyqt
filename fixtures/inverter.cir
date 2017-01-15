@@ -1,0 +1,13 @@
+*Inverter Circuit
+m0 out in Vdd Vdd pfet w=4U l=2U
+m1 out in GND Gnd nfet w=2U l=2U
+CLOAD out 0 1pF
+Vdd Vdd 0 5
+Vin in 0 0 PULSE .2 4.8 2N 1N 1N 5N 20N
+.OPTIONS POST LIST
+.TRAN 200P 20N
+.PRINT TRAN V (in) V(out)
+.MEASURE avgpow avg power from 0.00ns to 10.00ns
+.MODEL pfet PMOS LEVEL=1
+.MODEL nfet NMOS LEVEL=1
+.END
