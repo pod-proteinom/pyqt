@@ -49,11 +49,27 @@ class Scene(QWidget):
                 result.append("\n")
         return "".join(result)
 
-    def getLeftEditorText(self, text):
-        return "".join(text)
-
     def getRightEditorText(self, text):
-        return "".join(text)
+        result = []
+        for line in text:
+            subcktSearch = re.search(r"^\.subckt ([\w]+) ([\w]+\s+){2,}\w+", line, re.I)
+            if subcktSearch:
+                result.append(subcktSearch.group(1))
+                result.append("\n")
+        return "".join(result)
+
+    def getLeftEditorText(self, text):
+        result = []
+        netlist = "\n".join(text)
+        allSubckts = re.findall(r"^\.subckt.*?\.ends", netlist, re.I | re.DOTALL | re.M)
+        for subckt in allSubckts:
+            subcktSearch = re.search(r"^\.subckt ([\w]+)(.*?)\.ends", subckt, re.I | re.DOTALL)
+            if subcktSearch:
+                hierarchySubckt = re.search(r"^x.+", subcktSearch.group(2), re.I | re.M)
+                if hierarchySubckt is None:
+                    result.append(subcktSearch.group(1))
+                    result.append("\n")
+        return "".join(result)
 
     def showAbout(self):
         self.about.show()
